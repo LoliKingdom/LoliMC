@@ -9,15 +9,15 @@ void ITheme::apply(bool)
     QApplication::setStyle(QStyleFactory::create(qtTheme()));
     if(hasColorScheme())
     {
-        QApplication::setPalette(colorScheme());
+        // QApplication::setPalette(colorScheme());
     }
     if(hasStyleSheet())
     {
-        APPLICATION->setStyleSheet(appStyleSheet());
+        // APPLICATION->setStyleSheet(appStyleSheet());
     }
     else
     {
-        APPLICATION->setStyleSheet(QString());
+        // APPLICATION->setStyleSheet(QString());
     }
     QDir::setSearchPaths("theme", searchPaths());
 }

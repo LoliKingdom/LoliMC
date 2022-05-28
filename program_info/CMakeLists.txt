@@ -1,4 +1,4 @@
-set(Launcher_CommonName "PolyMC")
+set(Launcher_CommonName "LoliMC")
 
 set(Launcher_Copyright "PolyMC Contributors\\n© 2012-2021 MultiMC Contributors" PARENT_SCOPE)
 set(Launcher_Domain "polymc.org" PARENT_SCOPE)
@@ -6,7 +6,7 @@ set(Launcher_Name "${Launcher_CommonName}" PARENT_SCOPE)
 set(Launcher_DisplayName "${Launcher_CommonName}" PARENT_SCOPE)
 set(Launcher_UserAgent "${Launcher_CommonName}/${Launcher_RELEASE_VERSION_NAME}" PARENT_SCOPE)
 set(Launcher_ConfigFile "polymc.cfg" PARENT_SCOPE)
-set(Launcher_Git "https://github.com/PolyMC/PolyMC" PARENT_SCOPE)
+set(Launcher_Git "https://github.com/LoliKingdom/LoliMC" PARENT_SCOPE)
 set(Launcher_DesktopFileName "org.polymc.PolyMC.desktop" PARENT_SCOPE)
 
 set(Launcher_Desktop "program_info/org.polymc.PolyMC.desktop" PARENT_SCOPE)

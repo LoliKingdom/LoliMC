@@ -358,7 +358,7 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
 #ifdef Q_OS_LINUX
         // TODO: this should be removed in a future version
         // TODO: provide a migration path similar to macOS migration
-        QDir bar(FS::PathCombine(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation), "polymc"));
+        QDir bar(FS::PathCombine(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation), "lolimc"));
         if (bar.exists()) {
             dataPath = bar.absolutePath();
             adjustedBy = "Legacy data path";
@@ -590,6 +590,7 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         m_settings->registerSetting("InstanceDir", "instances");
         m_settings->registerSetting({"CentralModsDir", "ModsDir"}, "mods");
         m_settings->registerSetting("IconsDir", "icons");
+        m_settings->registerSetting("CunnyDir", "cunnies");
 
         // Editors
         m_settings->registerSetting("JsonEditor", QString());

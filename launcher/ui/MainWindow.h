@@ -64,8 +64,6 @@ protected:
     QMenu * createPopupMenu() override;
 
 private slots:
-    void onCatToggled(bool);
-
     void on_actionAbout_triggered();
 
     void on_actionAddInstance_triggered();
@@ -227,4 +225,3 @@ private:
     // managed by the application object
     Task *m_versionLoadTask = nullptr;
 };
-

@@ -28,6 +28,8 @@
 
 #include <QtGui/QKeyEvent>
 
+#include <QPainter>
+
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
@@ -215,7 +217,7 @@ public:
     TranslatedAction actionViewSelectedModsFolder;
     TranslatedAction actionDeleteInstance;
     TranslatedAction actionConfig_Folder;
-    TranslatedAction actionCAT;
+    // TranslatedAction actionCAT;
     TranslatedAction actionCopyInstance;
     TranslatedAction actionLaunchInstanceOffline;
     TranslatedAction actionScreenshots;
@@ -389,14 +391,14 @@ public:
             all_actions.append(&actionCheckUpdate);
         }
 
-        actionCAT = TranslatedAction(MainWindow);
-        actionCAT->setObjectName(QStringLiteral("actionCAT"));
-        actionCAT->setCheckable(true);
-        actionCAT->setIcon(APPLICATION->getThemedIcon("cat"));
-        actionCAT.setTextId(QT_TRANSLATE_NOOP("MainWindow", "&Meow"));
-        actionCAT.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "It's a fluffy kitty :3"));
-        actionCAT->setPriority(QAction::LowPriority);
-        all_actions.append(&actionCAT);
+        // actionCAT = TranslatedAction(MainWindow);
+        // actionCAT->setObjectName(QStringLiteral("actionCAT"));
+        // actionCAT->setCheckable(true);
+        // actionCAT->setIcon(APPLICATION->getThemedIcon("cat"));
+        // actionCAT.setTextId(QT_TRANSLATE_NOOP("MainWindow", "&Meow"));
+        // actionCAT.setTooltipId(QT_TRANSLATE_NOOP("MainWindow", "It's a fluffy kitty :3"));
+        // actionCAT->setPriority(QAction::LowPriority);
+        // all_actions.append(&actionCAT);
 
         // profile menu and its actions
         actionManageAccounts = TranslatedAction(MainWindow);
@@ -470,7 +472,7 @@ public:
 
         mainToolBar->addSeparator();
 
-        mainToolBar->addAction(actionCAT);
+        // mainToolBar->addAction(actionCAT);
 
         all_toolbars.append(&mainToolBar);
         MainWindow->addToolBar(Qt::TopToolBarArea, mainToolBar);
@@ -505,7 +507,7 @@ public:
         fileMenu->addAction(actionSettings);
 
         viewMenu = menuBar->addMenu(tr("&View"));
-        viewMenu->addAction(actionCAT);
+        // viewMenu->addAction(actionCAT);
         viewMenu->addSeparator();
 
         menuBar->addMenu(foldersMenu);
@@ -750,7 +752,7 @@ public:
         instanceToolBar->setEnabled(false);
         instanceToolBar->setMovable(true);
         // Qt doesn't like vertical moving toolbars, so we have to force them...
-        // See https://github.com/PolyMC/PolyMC/issues/493
+        // See https://github.com/LoliMC/LoliMC/issues/493
         connect(instanceToolBar, &QToolBar::orientationChanged, [=](Qt::Orientation){ instanceToolBar->setOrientation(Qt::Vertical); });
         instanceToolBar->setAllowedAreas(Qt::LeftToolBarArea | Qt::RightToolBarArea);
         instanceToolBar->setToolButtonStyle(Qt::ToolButtonTextOnly);
@@ -925,13 +927,28 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new MainWindow
         connect(view, &InstanceView::groupStateChanged, APPLICATION->instances().get(), &InstanceList::on_GroupStateChanged);
         ui->horizontalLayout->addWidget(view);
     }
-    // The cat background
+
     {
-        bool cat_enable = APPLICATION->settings()->get("TheCat").toBool();
-        ui->actionCAT->setChecked(cat_enable);
-        // NOTE: calling the operator like that is an ugly hack to appease ancient gcc...
-        connect(ui->actionCAT.operator->(), SIGNAL(toggled(bool)), SLOT(onCatToggled(bool)));
-        setCatBackground(cat_enable);
+        if (!APPLICATION->settings()->get("CunnyDir").toString().isEmpty() &&
+        APPLICATION->settings()->get("CunnyDir").toString() != "cunnies") {
+            APPLICATION->setStyleSheet(QString(R"(
+            InstanceView
+            {
+                background-image: url(%1);
+                background-position: center;
+                background-repeat: no-repeat;
+                background-color: palette(base);
+            })").arg(APPLICATION->settings()->get("CunnyDir").toString()));
+        } else {
+            APPLICATION->setStyleSheet(QString(R"(
+            InstanceView
+            {
+                background-image: url(:/backgrounds/bg);
+                background-position: center;
+                background-repeat: no-repeat;
+                background-color: palette(base);
+            })"));
+        }
     }
     // start instance when double-clicked
     connect(view, &InstanceView::activated, this, &MainWindow::instanceActivated);
@@ -1530,12 +1547,6 @@ void MainWindow::downloadUpdates(GoUpdate::Status status)
     }
 }
 
-void MainWindow::onCatToggled(bool state)
-{
-    setCatBackground(state);
-    APPLICATION->settings()->set("TheCat", state);
-}
-
 namespace {
 template <typename T>
 T non_stupid_abs(T in)
@@ -1548,36 +1559,7 @@ T non_stupid_abs(T in)
 
 void MainWindow::setCatBackground(bool enabled)
 {
-    if (enabled)
-    {
-        QDateTime now = QDateTime::currentDateTime();
-        QDateTime birthday(QDate(now.date().year(), 11, 30), QTime(0, 0));
-        QDateTime xmas(QDate(now.date().year(), 12, 25), QTime(0, 0));
-        QString cat;
-        if(non_stupid_abs(now.daysTo(xmas)) <= 4) {
-            cat = "catmas";
-        }
-        else if (non_stupid_abs(now.daysTo(birthday)) <= 12) {
-            cat = "cattiversary";
-        }
-        else {
-            cat = "kitteh";
-        }
-        view->setStyleSheet(QString(R"(
-InstanceView
-{
-    background-image: url(:/backgrounds/%1);
-    background-attachment: fixed;
-    background-clip: padding;
-    background-position: top right;
-    background-repeat: none;
-    background-color:palette(base);
-})").arg(cat));
-    }
-    else
-    {
-        view->setStyleSheet(QString());
-    }
+    // view->setStyleSheet(QString());
 }
 
 void MainWindow::runModalTask(Task *task)
@@ -1869,7 +1851,7 @@ void MainWindow::globalSettingsClosed()
     updateToolsMenu();
     updateStatusCenter();
     // This needs to be done to prevent UI elements disappearing in the event the config is changed
-    // but PolyMC exits abnormally, causing the window state to never be saved:
+    // but LoliMC exits abnormally, causing the window state to never be saved:
     APPLICATION->settings()->set("MainWindowState", saveState().toBase64());
     update();
 }

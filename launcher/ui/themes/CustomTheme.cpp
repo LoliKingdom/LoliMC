@@ -169,7 +169,7 @@ CustomTheme::CustomTheme(ITheme* baseTheme, QString folder)
         try
         {
             // TODO: validate css?
-            m_styleSheet = QString::fromUtf8(FS::read(cssFilePath));
+            // m_styleSheet = QString::fromUtf8(FS::read(cssFilePath));
         }
         catch (const Exception &e)
         {

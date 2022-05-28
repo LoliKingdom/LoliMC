@@ -50,6 +50,7 @@
 #include "Application.h"
 #include "BuildConfig.h"
 #include "ui/themes/ITheme.h"
+// #include "ui/instanceview/InstanceView.h"
 
 #include <QApplication>
 #include <QProcess>
@@ -161,6 +162,36 @@ void LauncherPage::on_instDirBrowseBtn_clicked()
     }
 }
 
+void LauncherPage::on_cunnyDirBrowseBtn_clicked()
+{
+    QString raw_dir = QFileDialog::getOpenFileName(this, tr("Cunnies Folder"), ui->cunnyDirTextBox->text());
+
+    // do not allow current dir - it's dirty. Do not allow dirs that don't exist
+    if (raw_dir.startsWith("http")) { return; }
+    ui->cunnyDirTextBox->setText(raw_dir);
+    APPLICATION->settings()->set("CunnyDir", raw_dir);
+    if (!raw_dir.isEmpty() && raw_dir != "cunnies") {
+        APPLICATION->setStyleSheet(QString(R"(
+            InstanceView
+            {
+                background-image: url(%1);
+                background-position: center;
+                background-repeat: no-repeat;
+                background-color: palette(base);
+            })").arg(raw_dir));
+    } else {
+        APPLICATION->setStyleSheet(QString(R"(
+            InstanceView
+            {
+                background-image: url(:/backgrounds/bg);
+                background-position: center;
+                background-repeat: no-repeat;
+                background-color: palette(base);
+            })"));
+    }
+
+
+}
 void LauncherPage::on_iconsDirBrowseBtn_clicked()
 {
     QString raw_dir = QFileDialog::getExistingDirectory(this, tr("Icons Folder"), ui->iconsDirTextBox->text());
@@ -326,6 +357,7 @@ void LauncherPage::applySettings()
     s->set("InstanceDir", ui->instDirTextBox->text());
     s->set("CentralModsDir", ui->modsDirTextBox->text());
     s->set("IconsDir", ui->iconsDirTextBox->text());
+    s->set("CunnyDir", ui->cunnyDirTextBox->text());
 
     auto sortMode = (InstSortMode)ui->sortingModeGroup->checkedId();
     switch (sortMode)
@@ -429,6 +461,29 @@ void LauncherPage::loadSettings()
     ui->instDirTextBox->setText(s->get("InstanceDir").toString());
     ui->modsDirTextBox->setText(s->get("CentralModsDir").toString());
     ui->iconsDirTextBox->setText(s->get("IconsDir").toString());
+    ui->cunnyDirTextBox->setText(s->get("CunnyDir").toString());
+
+
+    if (!APPLICATION->settings()->get("CunnyDir").toString().isEmpty() &&
+    APPLICATION->settings()->get("CunnyDir").toString() != "cunnies") {
+        APPLICATION->setStyleSheet(QString(R"(
+        InstanceView
+        {
+            background-image: url(%1);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: palette(base);
+        })").arg(APPLICATION->settings()->get("CunnyDir").toString()));
+    } else {
+        APPLICATION->setStyleSheet(QString(R"(
+        InstanceView
+        {
+            background-image: url(:/backgrounds/bg);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: palette(base);
+        })"));
+    }
 
     QString sortMode = s->get("InstSortMode").toString();
 
